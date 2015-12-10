@@ -1,0 +1,17 @@
+<p>Group name: {{ group.name }}</p>
+<p>MSU: {{ group.msu }}</p>
+<p>GM: {{ manager.name }} {{ manager.surname }}</p>
+<p>Deputy: {{ deputy.name }} {{ deputy.surname }}</p>
+
+{% if members %}
+<p>Group memebers</p>
+    <ul>
+    {% for member in members %}
+    {% if member.role = 'n' %}
+        <li><a href="memeber/{{ member.id }}/">{{ member.name }} {{ member.surname }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No members are available.</p>
+{% endif %}
