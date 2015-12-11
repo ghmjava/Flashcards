@@ -20,4 +20,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^utilise/', include('utilisations.urls')),
+    url(r'^flashcards/', include('flashcards.urls')),
 ]
