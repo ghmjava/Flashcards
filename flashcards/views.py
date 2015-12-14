@@ -12,9 +12,7 @@ from mobica import settings
 
 @login_required
 def index(request):
-    user = request.user
-    active = request.user.is_active
-    return HttpResponse('hello {}'.format(user.__str__()))
+    return render(request, 'index.html')
 
 @login_required
 def logout_view(request):

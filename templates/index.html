@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="Flashcards app">
+<meta name="author" content="Marcin Wachowiak">
+<link rel="icon" href="{% static "favicon.ico" %}">
+
+<title>Flash cards</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://select2.github.io/select2/select2-3.5.2/select2.css">
+<link rel="stylesheet" href="https://fk.github.io/select2-bootstrap-css/css/select2-bootstrap.css" />
+<link rel="stylesheet" href="https://fk.github.io/select2-bootstrap-css/css/gh-pages.css" />
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+	integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+	crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+
+	<div class="container">
+
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#bs-example-navbar-collapse-8"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Flash cards</a>
+				</div>
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-8">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#">Settings</a></li>
+						<li><a href="#">About</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+
+		<div class="span7 text-center">
+
+
+		<div class="select2-wrapper col-lg-6">
+			<div class="form-group">
+				<div class="input-group input-group-sm select2-bootstrap-prepend">
+					<span class="input-group-addon">
+						
+					</span>
+					<select id="select2-single-input-group-sm" class="form-control select2" enabled>
+						<option></option>
+						<optgroup label="Alaskan/Hawaiian Time Zone">
+	<option value="AK">Alaska</option>
+	<option value="HI">Hawaii</option>
+</optgroup>
+<optgroup label="Pacific Time Zone">
+	<option value="CA">California</option>
+	<option value="NV">Nevada</option>
+	<option value="OR">Oregon</option>
+	<option value="WA">Washington</option>
+</optgroup>
+<optgroup label="Mountain Time Zone">
+	<option value="AZ">Arizona</option>
+	<option value="CO">Colorado</option>
+	<option value="ID">Idaho</option>
+	<option value="MT">Montana</option><option value="NE">Nebraska</option>
+	<option value="NM">New Mexico</option>
+	<option value="ND">North Dakota</option>
+	<option value="UT">Utah</option>
+	<option value="WY">Wyoming</option>
+</optgroup>
+<optgroup label="Central Time Zone">
+	<option value="AL">Alabama</option>
+	<option value="AR">Arkansas</option>
+	<option value="IL">Illinois</option>
+	<option value="IA">Iowa</option>
+	<option value="KS">Kansas</option>
+	<option value="KY">Kentucky</option>
+	<option value="LA">Louisiana</option>
+	<option value="MN">Minnesota</option>
+	<option value="MS">Mississippi</option>
+	<option value="MO">Missouri</option>
+	<option value="OK">Oklahoma</option>
+	<option value="SD">South Dakota</option>
+	<option value="TX">Texas</option>
+	<option value="TN">Tennessee</option>
+	<option value="WI">Wisconsin</option>
+</optgroup>
+<optgroup label="Eastern Time Zone">
+	<option value="CT">Connecticut</option>
+	<option value="DE">Delaware</option>
+	<option value="FL">Florida</option>
+	<option value="GA">Georgia</option>
+	<option value="IN">Indiana</option>
+	<option value="ME">Maine</option>
+	<option value="MD">Maryland</option>
+	<option value="MA">Massachusetts</option>
+	<option value="MI">Michigan</option>
+	<option value="NH">New Hampshire</option><option value="NJ">New Jersey</option>
+	<option value="NY">New York</option>
+	<option value="NC">North Carolina</option>
+	<option value="OH">Ohio</option>
+	<option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option>
+	<option value="VT">Vermont</option><option value="VA">Virginia</option>
+	<option value="WV">West Virginia</option>
+</optgroup>
+
+					</select>
+				</div>
+			</div>
+		</div>
+
+
+
+		    <button type="button" class="btn btn-primary btn-lg">Start quiz</button>
+		</div>
+		
+	</div>
+	<!-- /container -->
+
+<script src="//select2.github.io/select2/select2-3.4.2/select2.js"></script>
+<script>
+	$( ".select2" ).select2( { placeholder: "Select a State", maximumSelectionSize: 6 } );
+
+	$( ":checkbox" ).on( "click", function() {
+		$( this ).parent().nextAll( "select" ).select2( "enable", this.checked );
+	});
+
+	$( "#demonstrations" ).select2( { placeholder: "Select2 version", minimumResultsForSearch: -1 } ).on( "change", function() {
+		document.location = $( this ).find( ":selected" ).val();
+	} );
+
+	$( "button[data-select2-open]" ).click( function() {
+		$( "#" + $( this ).data( "select2-open" ) ).select2( "open" );
+	});
+</script>
+
+</body>
+</html>
