@@ -2,13 +2,15 @@
 
 """
 from django.conf.urls import url, include
-from . import views
+from flashcards import views_rest
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'users', views_rest.UserViewSet)
+router.register(r'dictionaries', views_rest.DictionaryViewSet)
+
 
 urlpatterns = [
-
-    url('^$', views.index),
-
-    url('^', include('django.contrib.auth.urls')),
-    url(r'^logout$', views.logout_view),
-    url(r'^test$', views.test),
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

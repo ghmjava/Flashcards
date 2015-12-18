@@ -7,8 +7,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from mobica import settings
-
-# Create your views here.
+from flashcards.dto import Question
+import json
+from django.core import serializers
 
 @login_required
 def index(request):
@@ -48,3 +49,17 @@ def logged(request):
     else:
         # Return an 'invalid login' error message.
         return HttpResponse("invalid")
+
+def start_quiz(request):
+    
+    dictionary = request.GET.get('dictionary', None)
+    no_of_questions = request.GET.get('questions', None)
+
+    words = [Question('car', 'samochod'), Question('car2', 'samochod2')]
+
+    data = serializers.serialize('json', words, fields=('name'))
+    
+    datad = words[0].to_JSON()
+    data_json = json.dumps(words)
+
+    return render(request, 'quiz.html', {"words": words})
