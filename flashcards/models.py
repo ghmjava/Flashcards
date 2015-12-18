@@ -16,7 +16,7 @@ class Flashcard(models.Model):
     language = models.ForeignKey(Language, related_name='language')
     translation_language = models.ForeignKey(Language, related_name='translation_language')
     owner = models.ForeignKey(User)
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return self.word
@@ -34,12 +34,12 @@ class Dictionary(models.Model):
         verbose_name_plural = 'Dictionaries'
 
 class Dictionary_Flashcard(models.Model):
-    dictionary = models.ForeignKey(Dictionary)
-    flashcard = models.ForeignKey(Flashcard)
-    hits = models.IntegerField()
-    successes = models.IntegerField()
-    last_hit = models.DateTimeField()
-    last_success = models.DateTimeField()
+    dictionary = models.ForeignKey(Dictionary, related_name='flashcards')
+    flashcard = models.ForeignKey(Flashcard, related_name='dictionaries')
+    hits = models.IntegerField(default=0)
+    successes = models.IntegerField(default=0)
+    last_hit = models.DateTimeField(null=True)
+    last_success = models.DateTimeField(null=True)
 
     def __str__(self):
         return '{}: {}'.format(self.dictionary.name, self.flashcard.word)

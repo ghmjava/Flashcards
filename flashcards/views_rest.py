@@ -1,22 +1,10 @@
-from django.http.response import HttpResponse
-
-from rest_framework.renderers import JSONRenderer
-from flashcards.models import Dictionary
-from flashcards.serializers import DictionarySerializer, UserSerializer
+from flashcards.models import Dictionary, Language, Flashcard
+from flashcards.serializers import DictionarySerializer, UserSerializer,\
+    LanguageSerializer, FlashcardSerializer
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from flashcards.permissions import IsOwnerOrReadOnly
 from rest_framework import viewsets
-
-# Create your views here.
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
 
 class DictionaryViewSet(viewsets.ModelViewSet):
     """
@@ -29,6 +17,23 @@ class DictionaryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+class FlashcardViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = Flashcard.objects.all()
+    serializer_class = FlashcardSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """

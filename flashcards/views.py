@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from mobica import settings
-from flashcards.dto import Question
 import json
 from django.core import serializers
 
@@ -55,7 +54,7 @@ def start_quiz(request):
     dictionary = request.GET.get('dictionary', None)
     no_of_questions = request.GET.get('questions', None)
 
-    words = [Question('car', 'samochod'), Question('car2', 'samochod2')]
+    words = []
 
     data = serializers.serialize('json', words, fields=('name'))
     
