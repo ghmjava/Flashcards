@@ -12,18 +12,36 @@ class FlashcardSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'word', 'translation', 'language', 'translation_language', 'owner', 'created', 'dictionaries')
 
 class DictionarySerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    details = serializers.HyperlinkedRelatedField(source="id", many=False, view_name='dictionary-detail', read_only=True)
+    owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
-
+#     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', read_only=True)
     created = serializers.ReadOnlyField()
+
     class Meta:
         model = Dictionary
-        fields = ('id', 'name', 'description', 'owner', 'created', 'details', 'flashcards')
+        fields = ('id', 'name', 'description', 'owner', 'created', 'flashcards')
+
+    def create(self, validated_data):
+
+        flashcard_data = validated_data.pop('flashcards')
+        db_dict = Dictionary()
+        db_dict.name = validated_data.pop('name')
+        db_dict.name = validated_data.pop('description')
+        db_dict.owner = validated_data.pop('owner')
+        db_dict.save()
+        Dictionary_Flashcard.objects.filter(dictionary__id=db_dict.id).delete()
+        for flashcard in flashcard_data:
+            df = Dictionary_Flashcard()
+            df.dictionary = db_dict
+            db_flashcard = Flashcard.objects.filter(id=flashcard.id).first()
+            df.flashcard = db_flashcard
+            df.save()
+        return db_dict
 
     def update(self, instance, validated_data):
         db_dict = Dictionary.objects.filter(id=instance.id).first()
         db_dict.name = validated_data.pop('name')
+        db_dict.name = validated_data.pop('description')
         db_dict.save()
         flashcard_data = validated_data.pop('flashcards')
         Dictionary_Flashcard.objects.filter(dictionary__id=db_dict.id).delete()
