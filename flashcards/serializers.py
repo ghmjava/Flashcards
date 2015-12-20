@@ -21,14 +21,13 @@ class DictionarySerializer(serializers.HyperlinkedModelSerializer):
         model = Dictionary
         fields = ('id', 'name', 'description', 'owner', 'created', 'flashcards')
 
-    def create(self, validated_data):
+    def create_or_update(self, db_dict, validated_data):
 
-        flashcard_data = validated_data.pop('flashcards')
-        db_dict = Dictionary()
         db_dict.name = validated_data.pop('name')
         db_dict.name = validated_data.pop('description')
-        db_dict.owner = validated_data.pop('owner')
         db_dict.save()
+
+        flashcard_data = validated_data.pop('flashcards')
         Dictionary_Flashcard.objects.filter(dictionary__id=db_dict.id).delete()
         for flashcard in flashcard_data:
             df = Dictionary_Flashcard()
@@ -37,22 +36,17 @@ class DictionarySerializer(serializers.HyperlinkedModelSerializer):
             df.flashcard = db_flashcard
             df.save()
         return db_dict
+
+    def create(self, validated_data):
+
+        db_dict = Dictionary()
+        db_dict.owner = validated_data.pop('owner')
+        return self.create_or_update(db_dict, validated_data)
 
     def update(self, instance, validated_data):
         db_dict = Dictionary.objects.filter(id=instance.id).first()
-        db_dict.name = validated_data.pop('name')
-        db_dict.name = validated_data.pop('description')
-        db_dict.save()
-        flashcard_data = validated_data.pop('flashcards')
-        Dictionary_Flashcard.objects.filter(dictionary__id=db_dict.id).delete()
-        for flashcard in flashcard_data:
-            df = Dictionary_Flashcard()
-            df.dictionary = db_dict
-            db_flashcard = Flashcard.objects.filter(id=flashcard.id).first()
-            df.flashcard = db_flashcard
-            df.save()
-        return db_dict
-
+        return self.create_or_update(db_dict, validated_data)
+        
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     dictionaries = serializers.HyperlinkedRelatedField(many=True, view_name='dictionary-detail', read_only=True)
     
