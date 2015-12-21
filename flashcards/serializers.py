@@ -1,20 +1,52 @@
 from rest_framework import serializers
 from .models import Flashcard, Dictionary
-from flashcards.models import Language
+from flashcards.models import Language, Dictionary_Flashcard
 from django.contrib.auth.models import User
 
-class FlashcarsSerializer(serializers.ModelSerializer):
+class FlashcardSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    created = serializers.ReadOnlyField()
+    dictionaries = serializers.HyperlinkedRelatedField(many=True, view_name='dictionary-detail', read_only=True)
     class Meta:
         model = Flashcard
-        fields = ('id', 'word', 'translation', 'language', 'translation_language', 'owner', 'created')
+        fields = ('id', 'word', 'translation', 'language', 'translation_language', 'owner', 'created', 'dictionaries')
 
 class DictionarySerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    details = serializers.HyperlinkedRelatedField(source="id", many=False, view_name='dictionary-detail', read_only=True)
+    owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
+    flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
+#     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', read_only=True)
+    created = serializers.ReadOnlyField()
+
     class Meta:
         model = Dictionary
-        fields = ('id', 'name', 'description', 'owner', 'created', 'details')
+        fields = ('id', 'name', 'description', 'owner', 'created', 'flashcards')
 
+    def create_or_update(self, db_dict, validated_data):
+
+        db_dict.name = validated_data.pop('name')
+        db_dict.name = validated_data.pop('description')
+        db_dict.save()
+
+        flashcard_data = validated_data.pop('flashcards')
+        Dictionary_Flashcard.objects.filter(dictionary__id=db_dict.id).delete()
+        for flashcard in flashcard_data:
+            df = Dictionary_Flashcard()
+            df.dictionary = db_dict
+            db_flashcard = Flashcard.objects.filter(id=flashcard.id).first()
+            df.flashcard = db_flashcard
+            df.save()
+        return db_dict
+
+    def create(self, validated_data):
+
+        db_dict = Dictionary()
+        db_dict.owner = validated_data.pop('owner')
+        return self.create_or_update(db_dict, validated_data)
+
+    def update(self, instance, validated_data):
+        db_dict = Dictionary.objects.filter(id=instance.id).first()
+        return self.create_or_update(db_dict, validated_data)
+        
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     dictionaries = serializers.HyperlinkedRelatedField(many=True, view_name='dictionary-detail', read_only=True)
     

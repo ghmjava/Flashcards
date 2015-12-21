@@ -8,6 +8,8 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'users', views_rest.UserViewSet)
 router.register(r'dictionaries', views_rest.DictionaryViewSet)
+router.register(r'languages', views_rest.LanguageViewSet)
+router.register(r'flashcards', views_rest.FlashcardViewSet)
 
 
 urlpatterns = [
