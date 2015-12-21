@@ -5,17 +5,18 @@ from django.contrib.auth.models import User
 
 class FlashcardSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    created = serializers.ReadOnlyField()
+    created = serializers.DateTimeField()
     dictionaries = serializers.HyperlinkedRelatedField(many=True, view_name='dictionary-detail', read_only=True)
     class Meta:
         model = Flashcard
         fields = ('id', 'word', 'translation', 'language', 'translation_language', 'owner', 'created', 'dictionaries')
 
 class DictionarySerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
+#     owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
+    owner = serializers.HyperlinkedRelatedField(read_only=True, view_name='user-detail')
     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
 #     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', read_only=True)
-    created = serializers.ReadOnlyField()
+    created = serializers.DateTimeField()
 
     class Meta:
         model = Dictionary

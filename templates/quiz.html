@@ -23,12 +23,26 @@
 
 {% block bottom %}
 
-<p hidden>{{ words }}</p>
+<span id="holder-dictionary" hidden="true">{{ dictionary }}</span>
+<span id="holder-questions" hidden="true">{{ questions }}</span>
 
 	<script>
 
     $('.progress-bar').css('width', 0+'%').attr('aria-valuenow', 0);
     $('#progress-bar').text('0%');
+
+	$(document).ready(function() {
+
+		questions = $('#holder-questions').text();
+		serv_url = 'rest/dictionaries/' + $('#holder-dictionary').text();
+
+		$.ajax({
+
+	        url: serv_url
+	    }).then(function(data) {
+	    	alert(data.flashcards);
+	})});
+
     
     var curr = 0;
     

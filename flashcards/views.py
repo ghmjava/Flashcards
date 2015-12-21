@@ -52,13 +52,6 @@ def logged(request):
 def start_quiz(request):
     
     dictionary = request.GET.get('dictionary', None)
-    no_of_questions = request.GET.get('questions', None)
+    questions = request.GET.get('questions', None)
 
-    words = []
-
-    data = serializers.serialize('json', words, fields=('name'))
-    
-    datad = words[0].to_JSON()
-    data_json = json.dumps(words)
-
-    return render(request, 'quiz.html', {"words": words})
+    return render(request, 'quiz.html', {"dictionary": dictionary, "questions":questions})

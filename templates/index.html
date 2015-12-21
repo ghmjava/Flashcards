@@ -17,22 +17,19 @@
 			<div class="select2-wrapper triple-top-buffer">
 				<div
 					class="input-group form-group input-group-sm select2-bootstrap-prepend  col-xs-12 col-md-6 col-md-offset-3 top-buffer">
-					<label for="select-dictionary">Dictionary</label> <select
-						id="select-dictionary" class="form-control select2-dictionary"
-						name="dictionary" required>
-						<option></option>
-						<optgroup label="Public quizes">
-							<option value="Animals">Animals</option>
-							<option value="Flowers">Flowers</option>
-						</optgroup>
+					<label for="select-dictionary">Dictionary</label> 
+					<select
+						class="form-control select2-dictionary" name="dictionary" required>
+						<option />
+						<optgroup label="Public quizes" id='optgroup-public' ></optgroup>
 					</select>
 				</div>
 
 				<div
 					class="input-group form-group input-group-sm select2-bootstrap-prepend col-xs-12 col-md-6 col-md-offset-3 top-buffer">
 
-					<label for="select-no-of-questions">Number of questions</label> <select
-						id="select-no-of-questions"
+					<label for="select-no-of-questions">Number of questions</label> 
+					<select
 						class="form-control select2-number-of-questions" name="questions"
 						placeholder="Number of questions" required>
 						<option></option>
@@ -40,6 +37,8 @@
 						<option value="10">10</option>
 						<option value="15">15</option>
 						<option value="20">20</option>
+						<option value="20">30</option>
+						<option value="20">50</option>
 					</select>
 				</div>
 			</div>
@@ -61,6 +60,17 @@
 		$(".select2-number-of-questions").select2({
 			placeholder : " "
 		});
+		
+		var mySelect = $('#optgroup-public');
+		$(document).ready(function() {
+		    $.ajax({
+		        url: "rest/dictionaries/"
+		    }).then(function(data) {
+		    	for (var i = 0, len = data.results.length; i < len; i++) {
+		    		mySelect.append($('<option></option>').val(data.results[i].name).attr('value', data.results[i].id).html(data.results[i].name));
+		        }		   });
+		});
+		
 	</script>
 {% endblock %}
 </body>
