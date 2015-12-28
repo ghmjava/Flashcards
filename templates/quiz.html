@@ -32,8 +32,8 @@
         Quiz results
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default">Main menu</button>
-        <button type="button" class="btn btn-primary">Restart quiz</button>
+        <button id='main-menu-button' type="button" class="btn btn-default">Main menu</button>
+        <button id='restart-quiz-button' type="button" class="btn btn-primary">Restart quiz</button>
       </div>
     </div>
   </div>
@@ -53,6 +53,7 @@
 		$('#next-button').text('Next');
 		data = quizData;
 		answers = [];
+		current = 0;
 	}
 
 	function setProgress(progress) {
@@ -99,7 +100,17 @@
 	$('#next-button').on('click', function(e) {
 		checkAnswer();
 		askQuestion(current + 1);
+	});
 
-	})
-</script>
+	$('#main-menu-button').on('click', function(e) {
+		$('#myModal').modal('hide');
+		window.location.replace('index');
+	});
+
+	$('#restart-quiz-button').on('click', function(e) {
+		$('#myModal').modal('hide');
+		populateQuiz(data);
+	});
+
+	</script>
 {% endblock %}
