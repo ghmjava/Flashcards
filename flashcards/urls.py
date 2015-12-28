@@ -10,6 +10,7 @@ from mobica import settings
 router = DefaultRouter()
 router.register(r'users', views_rest.UserViewSet)
 router.register(r'dictionaries', views_rest.DictionaryViewSet)
+router.register(r'dictionariesw', views_rest.Dictionary2ViewSet)
 router.register(r'languages', views_rest.LanguageViewSet)
 router.register(r'flashcards', views_rest.FlashcardViewSet)
 

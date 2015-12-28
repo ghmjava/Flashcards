@@ -11,11 +11,29 @@ class FlashcardSerializer(serializers.HyperlinkedModelSerializer):
         model = Flashcard
         fields = ('id', 'word', 'translation', 'language', 'translation_language', 'owner', 'created', 'dictionaries')
 
-class DictionarySerializer(serializers.HyperlinkedModelSerializer):
+class SimpleFlashcardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flashcard
+        fields = ('id', 'word', 'translation')
+
+class ReadDictionarySerializer(serializers.ModelSerializer):
+#     owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
+    owner = serializers.SlugRelatedField(read_only=True, slug_field='username')
+#     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
+#     flashcards = serializers.SlugRelatedField(many=True, slug_field='word', queryset=Flashcard.objects.all())
+    flashcards = SimpleFlashcardSerializer(many=True)
+    created = serializers.DateTimeField()
+
+    class Meta:
+        model = Dictionary
+        fields = ('id', 'name', 'description', 'owner', 'created', 'flashcards')
+
+class WriteDictionarySerializer(serializers.ModelSerializer):
 #     owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
     owner = serializers.HyperlinkedRelatedField(read_only=True, view_name='user-detail')
     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
-#     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', read_only=True)
+#     flashcards = serializers.SlugRelatedField(many=True, slug_field='word', queryset=Flashcard.objects.all())
+#     flashcards = FlashcardSerializer(many=True)
     created = serializers.DateTimeField()
 
     class Meta:
