@@ -7,10 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 from mobica import settings
-import json
-from django.core import serializers
 
-@login_required
 def index(request):
     return render(request, 'index.html')
 
@@ -18,12 +15,6 @@ def index(request):
 def logout_view(request):
     logout(request)
     return HttpResponse('logged out')
-
-def test(request):
-    
-    if not request.user.is_authenticated():
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
-    return HttpResponse("test")
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -55,3 +46,12 @@ def start_quiz(request):
     questions = request.GET.get('questions', None)
 
     return render(request, 'quiz.html', {"dictionary": dictionary, "questions":questions})
+
+
+@sensitive_post_parameters()
+@csrf_protect
+@login_required
+def settings(request):
+
+    username = request.user
+    return render(request, 'settings.html')

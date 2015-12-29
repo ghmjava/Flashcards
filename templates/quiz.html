@@ -21,19 +21,19 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Quiz results</h4>
+        <h4 class="modal-title" id="resultsModalLabel">Quiz results</h4>
       </div>
       <div class="modal-body">
         Quiz results
       </div>
       <div class="modal-footer">
         <button id='main-menu-button' type="button" class="btn btn-default">Main menu</button>
-        <button id='restart-quiz-button' type="button" class="btn btn-primary">Restart quiz</button>
+        <button id='restart-quiz-button' type="button" class="btn btn-primary" >Restart quiz</button>
       </div>
     </div>
   </div>
@@ -51,6 +51,7 @@
 
 	function populateQuiz(quizData) {
 		$('#next-button').text('Next');
+		setTimeout( function() { $( '#answer' ).focus() }, 500 );
 		data = quizData;
 		answers = [];
 		current = 0;
@@ -64,25 +65,47 @@
 
 	function finishQuiz() {
 		$('#next-button').text('Results');
-		$('#myModal').modal('show');
+		$('#resultsModal').modal('show');
+		$('#restart-quiz-button').focus();
+		setTimeout( function() { $( '#restart-quiz-button' ).focus() }, 500 );
 	}
 
 	function askQuestion(questionNo) {
 
+		clearAnswer();
 		var no_of_questions = data.length;
 
 		if (questionNo == no_of_questions) {
 			finishQuiz();
 			return;
 		}
+		$('#answer').val('');
 		current = questionNo;
 		progress = 100 * (current + 1) / no_of_questions;
 		setProgress(progress);
 		$('#question').text(data[current].word);
 	}
 
+	function setInvalidAnswer(){
+		$('#answer').css("background-color", "#FF0000");		
+	}
+
+	function setCorrectAnswer(){
+		$('#answer').css("background-color", "#00FF00");		
+	}
+
+	function clearAnswer(){
+		$('#answer').css("background-color", "#FFFFFF");		
+	}
+
+	function isInvalidAnswerState(){
+		return $('#answer').css("background-color") == "rgb(255, 0, 0)";
+	}
+
 	function checkAnswer() {
-		answers[current] = (data[current].translation == $('#answer').val());
+		correct = (data[current].translation == $('#answer').val());
+		answers[current] = correct;
+		return correct;
 	}
 
 	$(document).ready(function() {
@@ -97,19 +120,47 @@
 		})
 	});
 
+	function answered(){
+		
+		if(isInvalidAnswerState()){
+			clearAnswer();
+			askQuestion(current + 1);
+			return;
+		}
+		
+		correct = checkAnswer();
+		if(correct){
+			setCorrectAnswer();
+			setTimeout( function() {  askQuestion(current + 1); }, 500 );
+
+		}else{
+			correctAnswer = data[current].translation;
+			setInvalidAnswer();
+			$('#answer').val('Should be ' + correctAnswer);
+		}		
+				
+	}
+	
 	$('#next-button').on('click', function(e) {
-		checkAnswer();
-		askQuestion(current + 1);
+		answered();
 	});
 
+	$('#answer').keypress(function (e) {
+		  if (e.which == 13) {
+				answered();
+				return false;
+			  }
+			});
+
 	$('#main-menu-button').on('click', function(e) {
-		$('#myModal').modal('hide');
+		$('#resultsModal').modal('hide');
 		window.location.replace('index');
 	});
 
 	$('#restart-quiz-button').on('click', function(e) {
-		$('#myModal').modal('hide');
+		$('#resultsModal').modal('hide');
 		populateQuiz(data);
+		askQuestion(0);
 	});
 
 	</script>

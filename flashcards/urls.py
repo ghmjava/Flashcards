@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^rest/', include(router.urls)),
     url(r'^$', views.index),
     url(r'^index.*$', RedirectView.as_view(url="/" + settings.APP_NAME)),
+    url(r'^settings$', views.settings),
     url(r'^startQuiz$', views.start_quiz),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+#     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url('^', include('django.contrib.auth.urls')),
 ]
