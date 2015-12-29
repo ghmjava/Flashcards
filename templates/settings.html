@@ -1,11 +1,67 @@
-{% extends "base.html" %} 
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
+<div class="panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading">Available dictionaries</div>
+	<div class="panel-body">
+		<p>This is a list of your dictionaries</p>
+	</div>
 
+	<!-- Table -->
+	<table id="dictTable" class="table">
+		<thead>
+			<tr class="dictTableRow">
+				<th>ID</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Created</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
 
 {% endblock %} 
 
+{% block bottom %} 
 
-{% block bottom %}
+<script>
 
+	var data;
+	
+	function populateDictionaries(dictData) {
+		data = dictData;
+		for(pos=0 ; pos < dictData.length ; pos++){
+			addDictionaryRow(data[pos].id, data[pos].name, data[pos].description, data[pos].created);
+		}
+	}
+
+	function addDictionaryRow(id, name, desc, created){
+		$('#dictTable tr:last').after(
+				'<tr class="dictTableRow">' + 
+					'<th scope="row">' + id + '</th>' +
+					'<td>' + name + '</td>'+
+					'<td>' + desc + '</td>'+
+					'<td>' + created + '</td>'+
+					'<td><button type="button" class="btn btn-danger">Remove</button></td>'+
+				'</tr>');
+	}
+
+	$(document).ready(function() {
+		
+		serv_url = 'rest/users/{{ user.id }}';
+		$.ajax({
+			url : serv_url
+		}).then(function(data) {
+			populateDictionaries(data.dictionaries);
+		})
+
+	});
+
+	$('.dictTableRow').on('click', function(e) {
+		alert('as');
+	});
+		</script>
 {% endblock %}

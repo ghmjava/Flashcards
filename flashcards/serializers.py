@@ -28,6 +28,16 @@ class ReadDictionarySerializer(serializers.ModelSerializer):
         model = Dictionary
         fields = ('id', 'name', 'description', 'owner', 'created', 'flashcards')
 
+class ReadSimpleDictionarySerializer(serializers.ModelSerializer):
+#     owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
+#     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
+#     flashcards = serializers.SlugRelatedField(many=True, slug_field='word', queryset=Flashcard.objects.all())
+    created = serializers.DateTimeField()
+
+    class Meta:
+        model = Dictionary
+        fields = ('id', 'name', 'description', 'created')
+
 class WriteDictionarySerializer(serializers.ModelSerializer):
 #     owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
     owner = serializers.HyperlinkedRelatedField(read_only=True, view_name='user-detail')
@@ -66,8 +76,9 @@ class WriteDictionarySerializer(serializers.ModelSerializer):
         db_dict = Dictionary.objects.filter(id=instance.id).first()
         return self.create_or_update(db_dict, validated_data)
         
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    dictionaries = serializers.HyperlinkedRelatedField(many=True, view_name='dictionary-detail', read_only=True)
+class UserSerializer(serializers.ModelSerializer):
+#     dictionaries = serializers.HyperlinkedRelatedField(many=True, view_name='dictionary-detail', read_only=True)
+    dictionaries = ReadSimpleDictionarySerializer(many=True)
     
     class Meta:
         model = User

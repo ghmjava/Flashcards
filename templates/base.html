@@ -26,8 +26,7 @@
 	integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
 	crossorigin="anonymous"></script>
 
-		{% block head_content %}
-		{% endblock %}
+{% block head_content %} {% endblock %}
 
 </head>
 <body>
@@ -51,16 +50,24 @@
 						<li><a href="settings">Settings</a></li>
 						<li><a href="#">About</a></li>
 					</ul>
+
+					{% if user.is_authenticated %}
+
+					<ul class="nav navbar-nav navbar-right">
+						<li><a>Welcome {{ user.username }}</a></li>
+
+						<li><a href="logout?next=/flashcards">Logout</a></li>
+					</ul>
+					{% endif %}
 				</div>
 			</div>
 		</nav>
-		
-		{% block content %}
-		{% endblock %}
+
+		{% block content %} {% endblock %}
 	</div>
 
-		{% block bottom %}
-		{% endblock %}
+
+	{% block bottom %} {% endblock %}
 
 </body>
 </html>
