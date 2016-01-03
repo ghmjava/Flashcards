@@ -1,5 +1,21 @@
 {% extends "base.html" %} {% block content %}
 
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+                Do you really want to delete selected dictionary?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a id="deleteConfirmedButton" class="btn btn-danger btn-ok">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="panel panel-default">
 	<!-- Default panel contents -->
 	<div class="panel-heading">Available dictionaries</div>
@@ -10,7 +26,7 @@
 	<!-- Table -->
 	<table id="dictTable" class="table">
 		<thead>
-			<tr class="dictTableRow">
+			<tr  class="dictTableHeader">
 				<th>ID</th>
 				<th>Name</th>
 				<th>Description</th>
@@ -32,7 +48,10 @@
 	var data;
 	
 	function populateDictionaries(dictData) {
+
 		data = dictData;
+		$(".dictTableRow").remove();
+		
 		for(pos=0 ; pos < dictData.length ; pos++){
 			addDictionaryRow(data[pos].id, data[pos].name, data[pos].description, data[pos].created);
 		}
@@ -40,28 +59,93 @@
 
 	function addDictionaryRow(id, name, desc, created){
 		$('#dictTable tr:last').after(
-				'<tr class="dictTableRow">' + 
-					'<th scope="row">' + id + '</th>' +
-					'<td>' + name + '</td>'+
-					'<td>' + desc + '</td>'+
-					'<td>' + created + '</td>'+
-					'<td><button type="button" class="btn btn-danger">Remove</button></td>'+
-				'</tr>');
+				"<tr class=\"dictTableRow\">" + 
+					"<td class=\"row-id\">" + id + "</td>" +
+					"<td>" + name + "</td>"+
+					"<td>" + desc + "</td>"+
+					"<td>" + created + "</td>"+
+					"<td><button type=\"button\" class=\"btn btn-danger\">Remove</button></td>"+
+				"</tr>");
 	}
 
-	$(document).ready(function() {
-		
+	function loadDictionaries(){
 		serv_url = 'rest/users/{{ user.id }}';
 		$.ajax({
 			url : serv_url
 		}).then(function(data) {
 			populateDictionaries(data.dictionaries);
 		})
+	}
+	function showDictDetails(){
+		
+	}
+	
+	function removeSuccess(){
+		alert('Dictionary successfully deleted');
+	}
+	
+	function removeError(xhr, error){
+        console.debug(xhr); 
+        console.debug(error);
+    }
+
+	function deleteDictionary(dictionaryId){
+		serv_url = 'rest/dictionaries/' + dictionaryId + '/';
+		$.ajax({
+			url : serv_url,
+			type: 'DELETE',
+	        success: removeSuccess,
+		    error: removeError
+		    
+		}).then(function(data) {
+			loadDictionaries();
+		})
+
+	}
+
+	var csrftoken = getCookie('csrftoken');
+		
+	$.ajaxSetup({
+	    beforeSend: function(xhr, settings) {
+	        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+	            // Send the token to same-origin, relative URLs only.
+	            // Send the token only if the method warrants CSRF protection
+	            // Using the CSRFToken value acquired earlier
+	            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	        }
+	    }
+	});
+	$(document).ready(function() {
+		
+		loadDictionaries();
 
 	});
 
-	$('.dictTableRow').on('click', function(e) {
-		alert('as');
+	$(document).on('click', '.dictTableRow', function(e) {
+		showDictDetails();
 	});
-		</script>
+
+	var selectedId;
+	function showConfirmationModal(){
+		$('#confirmationModal').modal('show');
+		//deleteDictionary(selectedId);
+	}
+
+	$('#deleteConfirmedButton').on('click', function(e) {
+		e.stopPropagation();
+		$('#confirmationModal').modal('hide');
+		deleteDictionary(selectedId);
+	});
+
+	$(document).on('click', '.btn-danger', function(e) {
+		e.stopPropagation();
+
+		selectedId = $(this).closest("tr")   // Finds the closest row <tr> 
+        .find(".row-id")     // Gets a descendent with class="nr"
+        .text();
+        
+        showConfirmationModal();
+	});
+
+	</script>
 {% endblock %}

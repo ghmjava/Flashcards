@@ -26,10 +26,14 @@
 	integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
 	crossorigin="anonymous"></script>
 
+<script
+	src="{% static "assets/js/csrf.js" %}"></script>
+
 {% block head_content %} {% endblock %}
 
 </head>
 <body>
+
 	<div class="container">
 		<nav class="navbar navbar-default navbar-static-top">
 			<div class="container-fluid">
@@ -58,6 +62,10 @@
 
 						<li><a href="logout?next=/flashcards">Logout</a></li>
 					</ul>
+					{% else %}
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="login?next=/flashcards">Login</a></li>
+					</ul>					
 					{% endif %}
 				</div>
 			</div>

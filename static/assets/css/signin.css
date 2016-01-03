@@ -54,10 +54,12 @@ body {
 	margin-bottom: 10px;
 }
 
-tr.dictTableRow { cursor: pointer; }
+tr.dictTableRow { 
+	cursor: pointer;	
+}
 
 table tr:nth-child(odd) td{
-	background-color: #AAAAFF;
+	background-color: #EEEEEE;
 }
 table tr:nth-child(even) td{
 }
