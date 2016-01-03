@@ -22,7 +22,7 @@ class ReadDictionarySerializer(serializers.ModelSerializer):
 #     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
 #     flashcards = serializers.SlugRelatedField(many=True, slug_field='word', queryset=Flashcard.objects.all())
     flashcards = SimpleFlashcardSerializer(many=True)
-    created = serializers.DateTimeField()
+    created = serializers.DateTimeField(format='%Y-%m-%d')
 
     class Meta:
         model = Dictionary
@@ -32,7 +32,7 @@ class ReadSimpleDictionarySerializer(serializers.ModelSerializer):
 #     owner = serializers.HyperlinkedIdentityField(many=False, view_name='user-detail')
 #     flashcards = serializers.HyperlinkedRelatedField(many=True, view_name='flashcard-detail', queryset=Flashcard.objects.all())
 #     flashcards = serializers.SlugRelatedField(many=True, slug_field='word', queryset=Flashcard.objects.all())
-    created = serializers.DateTimeField()
+    created = serializers.DateTimeField(format='%Y-%m-%d')
 
     class Meta:
         model = Dictionary

@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<div class="panel panel-default">
+<div id="dict-panel" class="panel panel-default">
 	<!-- Default panel contents -->
 	<div class="panel-heading">Available dictionaries</div>
 	<div class="panel-body">
@@ -39,6 +39,33 @@
 	</table>
 </div>
 
+<div id="words-panel" class="table-hide panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading">Words defined for given dictionary</div>
+	<div class="panel-body">
+		<p>This is a list of words</p>
+	</div>
+
+	<!-- Table -->
+	<table id="dictTable" class="table">
+		<thead>
+			<tr  class="dictTableHeader">
+				<th>ID</th>
+				<th>Word</th>
+				<th>Translation</th>
+				<th>Languages</th>
+				<th>Created</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+            <div class="modal-footer">
+                <button id="back-button" type="button" class="btn btn-default">Back</button>
+            </div>
+</div>
+
 {% endblock %} 
 
 {% block bottom %} 
@@ -55,6 +82,13 @@
 		for(pos=0 ; pos < dictData.length ; pos++){
 			addDictionaryRow(data[pos].id, data[pos].name, data[pos].description, data[pos].created);
 		}
+		if ($(window).width() < 400 ) {
+		    $(".btn-danger").text("X");
+		}
+		else { 
+			$(".btn-danger").text("Remove");
+		}
+
 	}
 
 	function addDictionaryRow(id, name, desc, created){
@@ -77,7 +111,13 @@
 		})
 	}
 	function showDictDetails(){
-		
+		$('#dict-panel').hide();
+		$('#words-panel').show();
+	}
+	
+	function hideDictDetails(){
+		$('#dict-panel').show();
+		$('#words-panel').hide();		
 	}
 	
 	function removeSuccess(){
@@ -137,6 +177,9 @@
 		deleteDictionary(selectedId);
 	});
 
+	$('#back-button').on('click', function(e) {
+		hideDictDetails();
+	});
 	$(document).on('click', '.btn-danger', function(e) {
 		e.stopPropagation();
 

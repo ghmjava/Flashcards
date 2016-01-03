@@ -63,3 +63,10 @@ table tr:nth-child(odd) td{
 }
 table tr:nth-child(even) td{
 }
+
+.table-hide{
+	display: none;
+}
+.table-show{
+	display: block;
+}
