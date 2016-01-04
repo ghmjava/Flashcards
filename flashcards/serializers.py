@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Flashcard, Dictionary
-from flashcards.models import Language, Dictionary_Flashcard
+from flashcards.models import Language, Flashcards_Dictionary
 from django.contrib.auth.models import User
 
 class FlashcardSerializer(serializers.HyperlinkedModelSerializer):
@@ -57,9 +57,9 @@ class WriteDictionarySerializer(serializers.ModelSerializer):
         db_dict.save()
 
         flashcard_data = validated_data.pop('flashcards')
-        Dictionary_Flashcard.objects.filter(dictionary__id=db_dict.id).delete()
+        Flashcards_Dictionary.objects.filter(dictionary__id=db_dict.id).delete()
         for flashcard in flashcard_data:
-            df = Dictionary_Flashcard()
+            df = Flashcards_Dictionary()
             df.dictionary = db_dict
             db_flashcard = Flashcard.objects.filter(id=flashcard.id).first()
             df.flashcard = db_flashcard

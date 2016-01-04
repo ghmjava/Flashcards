@@ -16,11 +16,49 @@
     </div>
 </div>
 
+<div class="modal fade" id="edit-dictionary" tabindex="-1" role="dialog" aria-labelledby="editDictionaryLabel" aria-hidden="true">
+	<form>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            Edit a dictionary details
+            </div>
+            <div class="modal-body">
+
+	<label for="name" >Name</label>
+        <input type="text" id="name" name="name" class="form-control" maxlength="30" placeholder="Name" required autofocus>
+	<label for="description" >Description</label>
+        <input type="text" id="description" name="description" class="form-control" maxlength="200" placeholder="Description" required>
+	<label for="base-language" >Base language</label>
+	<input id="base-language" name="base-language" placeholder="Base language" list="base-language-list" class="form-control"/>
+        <datalist id="base-language-list" style="form-control" title="Base language">
+        <option value="en">English</option>
+        <option value="pl">Polish</option>
+        </datalist>
+	<label for="target-language" style="col-md-">Target language</label>
+	<input id="target-language" name="target-language" placeholder="Target language" list="target-language-list" class="form-control"/>
+        <datalist id="target-language-list" style="form-control" title="Target language">
+        <option value="en">English</option>
+        <option value="pl">Polish</option>
+        </datalist>
+
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-ok btn-ok">Confirm</button>
+            </div>
+        </div>
+    </div>
+	</form>
+</div>
+
 <div id="dict-panel" class="panel panel-default">
 	<!-- Default panel contents -->
-	<div class="panel-heading">Available dictionaries</div>
+	<div class="panel-heading">List of your dictionaries</div>
 	<div class="panel-body">
-		<p>This is a list of your dictionaries</p>
+        <div id="edit-dictionary-button" class="btn pull-right btn-info btn-ok">Add a dictionary</div>
+		
 	</div>
 
 	<!-- Table -->
@@ -188,6 +226,10 @@
         .text();
         
         showConfirmationModal();
+	});
+
+	$(document).on('click', '#edit-dictionary-button', function(e) {
+		$('#edit-dictionary').modal('show');
 	});
 
 	</script>
